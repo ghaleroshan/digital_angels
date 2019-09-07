@@ -86,9 +86,23 @@ function listEvents(auth) {
             events.map((event, i) => {
                 const start = event.start.dateTime || event.start.date;
                 console.log(`${start} - ${event.summary}`);
+                console.log(event);
             });
         } else {
             console.log('No upcoming events found.');
         }
     });
+}
+
+async function test(){
+    try {
+        const content = await fs.readFile('credentials.json');
+        return authorize(JSON.parse(content), listEvents);
+    } catch(err) {
+        return console.log('Error loading client secret file:', err);
+    }
+}
+
+module.exports = {
+    test
 }
