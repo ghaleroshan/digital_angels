@@ -1,7 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const bookings = require("./src/booking");
-const bookableDays = require("./src/bookabledays");
+// const booking = require("./src/booking");
+const mongoose = require("mongoose");
+const Data = require("./src/schema");
 
 const app = express();
 app.use(bodyParser.json());
@@ -11,23 +12,42 @@ app.use(bodyParser.urlencoded({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+mongoose.connect('mongodb+srv://ghale:roshan@cluster0-azxcl.mongodb.net/test?retryWrites=true&w=majority',{useNewUrlParser: true});
+let db = mongoose.connection;
+db.once('open', () => console.log('connected to the database'));
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-app.get('/', function (req, res) {
-    res.json({
-        status: 'API Its Working',
-        message: 'Welcome to RESTHub crafted with love!'
+
+app.get('/bookings', (req, res)=>{
+Data.find((err, data) =>{
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, data: data });
+    })
+});
+
+app.post('/create-booking', (req, res) => {
+    let data = new Data();
+
+    const { id, startTime, endTime } = req.body;
+
+    if ((!id && id !== 0) || startTime || endTime) {
+        return res.json({
+            success: false,
+            error: 'INVALID INPUTS',
+        });
+    }
+    data.id = id;
+    data.startTime = startTime;
+    data.endTime = endTime;
+    data.save((err) => {
+        if (err) return res.json({ success: false, error: err });
+        return res.json({ success: true });
     });
 });
 
-app.post("/api/booking", async(req, res) => {
-    res.json(await bookings.create(req.body));
-});
 
-app.get("/days:id", async(req, res) => {
-    res.json(await bookableDays.get(req.params, req.body));
-});
-
-let PORT = 9090;
-app.listen(PORT, () =>
-    console.log(`Listening on port ${PORT}!`),
+const server = app.listen(3000, () =>
+    console.log(`Listening on port ` + server.address().port + "...."),
 );
+
+module.exports = server;

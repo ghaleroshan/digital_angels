@@ -1,22 +1,49 @@
-async function create(booking){
- checkDate(booking.startDate, booking.endDate);
-    let res = [
-        booking.clientName,
-        booking.clientAddress,
-        booking.phone,
-    ];
-    return {"message": "booking has been created"}
-}
-
-
-function checkDate(startDate, endDate)  {
-    if(startDate && endDate) {
-        return true;
-    } else {
-        return (new Error("has no time slot")) ;
-    }
-}
-
-module.exports = {
-    create
-};
+// const Booking = require("./schema");
+//
+//
+//
+// exports.createBooking = function (req, res) {
+//     let duplicateBooking = checkDateTime(req.query.date, req.query.time);
+//     duplicateBooking.then(function (res) {
+//         if (res !== null) {
+//             res.json({message:"Invalid Time slot"});
+//         } else {
+//             const newBooking = new Booking;
+//             newBooking.save().then(function (newBooking) {
+//                 res.json({message: "Booking Saved", newBooking})
+//             })
+//         }
+//     }, function (err) {
+//         console.log(err)
+//     });
+// };
+//
+//
+// exports.getBookings = function(err, booking){
+//     booking.find(function (booking,err) {
+//         if(booking){
+//             return booking;
+//         }else{
+//             return err;
+//         }
+//     })
+// }
+//
+// function checkDateTime(date, time) {
+//     return new Promise(function (resolve, reject) {
+//         Booking.findOne({
+//             'date':date,
+//             'time':time
+//         },'', function (err,booking) {
+//             if(err){
+//                 reject(err)
+//             }else{
+//                 resolve(booking)
+//             }
+//         });
+//     })
+// }
+//
+// let errHandler = function (err) {
+//     console.log(err);
+// };
